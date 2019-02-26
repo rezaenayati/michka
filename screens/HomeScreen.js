@@ -7,84 +7,36 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
 
+const {height, width} = Dimensions.get('window');
+
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    header: null,
+    title: 'Home',
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
+        <View style={styles.header}>
+          <Image
+            style={styles.avatar}
+            source={require('../assets/images/avatar.jpg')}
+          />
+          <TouchableOpacity style={styles.usernameContainer}>
+            <Text style={styles.usernameText}>UserName</Text>
+          </TouchableOpacity>
         </View>
+        <ScrollView style={styles.test}>
+          <View></View>
+        </ScrollView>
       </View>
     );
-  }
-
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
   }
 
   _handleLearnMorePress = () => {
@@ -99,16 +51,34 @@ export default class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  test: {
+    backgroundColor: 'red',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
+  header: {
+    borderColor: 'black',
+    width: width,
+    height: height / 8,
+    backgroundColor: 'yellow',
+    flexDirection: 'row',
+
+  },
+  avatar: {
+    width: width / 4,
+    height: height / 10,
+    resizeMode: 'contain',
+    borderRadius: 60,
+    marginTop: height / 128,
+  },
+  usernameContainer: {
+  },
+  usernameText: {
     fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
+    marginTop: height/20 + height/128,
+    fontSize: 15,
   },
   contentContainer: {
     paddingTop: 30,
@@ -117,13 +87,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
     marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
   },
   getStartedContainer: {
     alignItems: 'center',
