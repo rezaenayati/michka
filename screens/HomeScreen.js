@@ -12,6 +12,8 @@ import {
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import {fetchUser , test} from '../logics';
+
 
 const {height, width} = Dimensions.get('window');
 
@@ -20,16 +22,55 @@ export default class HomeScreen extends React.Component {
     title: 'Home',
   };
 
+  state = {
+    name: "null",
+    username: null,
+    avatarUrl: null,
+  };
+
+  componentWillMount(){
+    this.fetchUser2();
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      console.log("Hey Joey do wanna eat some juice?");
+    }, 5000);
+  }
+
+  fetchUser2 = (username) => {
+    var inf = {};
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    var timestamp = Math.floor(Date.now() / 1000);
+    xhr.responseType = 'json';
+    //TODO need to set timestamp from Date.now() and work for every user_id
+    xhr.open("GET", "https://api.twitter.com/1.1/users/show.json?user_id=870812911119347712");
+    xhr.setRequestHeader("Authorization", "OAuth oauth_consumer_key=\"ziUG9xZPCKMAH9ggYfrbLRiQE\",oauth_token=\"870812911119347712-tbY6QIJJqMymC58RA1ifINm0MEFYnXn\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1551284679\",oauth_nonce=\"gTdTAgKdvfs\",oauth_version=\"1.0\",oauth_signature=\"f2dEo8ZLMwR4D%2B3PhuXX25PmDXU%3D\"");
+    xhr.setRequestHeader("cache-control", "no-cache");
+    xhr.onload  = () => {
+       var jsonResponse = xhr.response;
+       console.log(jsonResponse);
+       this.setState({name : jsonResponse.name});
+       this.setState({username : jsonResponse.screen_name});
+       this.setState({avatarUrl : jsonResponse.profile_image_url});
+
+       console.log("Yes");
+    };
+    xhr.send(inf);
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
           <Image
             style={styles.avatar}
-            source={require('../assets/images/avatar.jpg')}
+            source={{uri : this.state.avatarUrl}}
           />
-          <TouchableOpacity style={styles.usernameContainer}>
-            <Text style={styles.usernameText}>UserName</Text>
+          <TouchableOpacity style={styles.usernameContainer} onPress={this._handlePress}>
+            <Text style={styles.usernameText}>@{this.state.username}</Text>
+            <Text style={styles.nameText}>{this.state.name}</Text>
           </TouchableOpacity>
         </View>
         <ScrollView style={styles.test}>
@@ -38,21 +79,14 @@ export default class HomeScreen extends React.Component {
       </View>
     );
   }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
+  _handlePress = () => {
+    WebBrowser.openBrowserAsync('https:twitter.com/rezam_6');
   };
 }
 
 const styles = StyleSheet.create({
   test: {
-    backgroundColor: 'red',
+    backgroundColor: '#abacad',
   },
   container: {
     flex: 1,
@@ -62,7 +96,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     width: width,
     height: height / 8,
-    backgroundColor: 'yellow',
+    backgroundColor: '#c5d8f7',
     flexDirection: 'row',
 
   },
@@ -74,78 +108,13 @@ const styles = StyleSheet.create({
     marginTop: height / 128,
   },
   usernameContainer: {
+    marginTop: height/80 ,
   },
   usernameText: {
-    fontSize: 14,
-    marginTop: height/20 + height/128,
+    // marginTop: height/100 + height/128,
     fontSize: 15,
   },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
+  nameText: {
+    fontSize: 35,
   },
 });
