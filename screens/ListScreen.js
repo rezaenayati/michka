@@ -1,9 +1,9 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet, Text , View ,Platform} from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 
 import {fetchData , fetchUserFollower}  from '../utils/api';
-// import {SearchInput} from '../components/SearchInput';
+import SearchInput from '../components/SearchInput';
 
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
@@ -24,13 +24,19 @@ export default class LinksScreen extends React.Component {
       this.setState({data: data});
     });
   }
-  // <SearchInput placeholder="Search any city" onSubmit={this.handleUpdateLocation} />
+
+  handleSubmitEditing = async username => {
+    this.handleFetchUser(username);
+  }
 
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <Text>{this.state.data}</Text>
-      </ScrollView>
+      <View style={styles.container}>
+        <SearchInput placeholder="Type Username" onSubmit={this.handleSubmitEditing} />
+        <ScrollView>
+          <Text style={[styles.largeText , styles.textStyle]}>{this.state.data}</Text>
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -41,4 +47,23 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     backgroundColor: '#fff',
   },
+  textStyle: {
+  textAlign: 'center',
+  ...Platform.select({
+    ios: {
+      fontFamily: 'AvenirNext-Regular',
+    },
+    android: {
+      fontFamily: 'Roboto',
+    },
+  }),
+  color: 'red',
+  },
+  largeText: {
+    fontSize: 44,
+  },
+  smallText: {
+    fontSize: 18,
+  },
+
 });
